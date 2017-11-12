@@ -1,0 +1,164 @@
+<meta charset = "UTF-8">
+<html>
+    <style>
+     .container {
+         overflow: hidden;
+     }
+
+     .filterDiv {
+         float: Center;
+         width: fill;
+         background-color: #a9a9a9;
+         color: #ffffff;
+         line-height: 50px;
+         text-align: center;
+         margin: 10px;
+
+         display: none; /* Hidden by default */
+     }
+     div.filterDiv:hover {
+         background-color:rgb(202,235,242);
+     }
+     /* The "show" class is added to the filtered elements */
+     .show {
+         display: block;
+     }
+     body{
+         background-color: rgba(239,239,239,1);
+     }
+     .Avaliable{
+         background-color: green;
+     }
+    </style>
+    <head>
+        <script src="jquery.js"></script>
+        <script src="cheerio.js"></script>
+        <script src="require.js"></script>
+        <script src="node.js"></script>
+        <script data-main="main.js"></script>
+        <script>
+         //Turn the div element in the filter div
+         filterSelection("all")
+         function filterSelection(c,availiable) {
+             var x, i;
+             x = document.getElementsByClassName("filterDiv");
+             if (c == "all") c = "";
+             // Add the "show" class (display:block) to the filtered elements, and remove the "show" class from the elements that are not selected
+             for (i = 0; i < x.length; i++) {
+                 RemoveClass(x[i], "show");
+                 if (x[i].className.indexOf(c) > -1) AddClass(x[i], "show");
+             }
+         }
+
+         // Show filtered elements
+         function AddClass(element, name) {
+             var i, arr1, arr2;
+             arr1 = element.className.split(" ");
+             arr2 = name.split(" ");
+             for (i = 0; i < arr2.length; i++) {
+                 if (arr1.indexOf(arr2[i]) == -1) {
+                     element.className += " " + arr2[i];
+                 }
+             }
+         }
+
+         // Hide elements that are not selected
+         function RemoveClass(element, name) {
+             var i, arr1, arr2;
+             arr1 = element.className.split(" ");
+             arr2 = name.split(" ");
+             for (i = 0; i < arr2.length; i++) {
+                 while (arr1.indexOf(arr2[i]) > -1) {
+                     arr1.splice(arr1.indexOf(arr2[i]), 1);
+                 }
+             }
+             element.className = arr1.join(" ");
+         }
+
+         // ??Returns true of room is avaiable
+         function isAvailable() {// (element, name, availiable) {
+             var request = require('request');
+             var cheerio = require('cheerio');
+
+             request('http://leml365x-lemlpi.seattleu.edu/', function (error, response, html) {
+                 if (!error && response.statusCode == 200) {
+                     var $ = cheerio.load(html);
+                     /*
+                        $('div.space').each(function(i, element){
+                        n_use  var next = $(this).next();
+                        console.log(next.text());
+                        });
+                      */
+
+                     $('div.container').children().each(function() {
+                         var val = $(this).val();
+                         console.log(val);
+                         var str = val.toString();
+
+                         // returns true if room is available
+                         var is_available = str.includes("available");
+                         console.log(is_available);
+                     });
+                 }
+             });
+
+             /*
+                var i, arr1, arr2, arr3;
+                arr1 = element.className.split(" ");
+                arr2 = name.split(" ");\
+                arr3 = availiable;
+                for (i = 0; i < arr2.length; i++) {
+                if (arr1.indexOf(arr2[i]) == -1) {
+                element.className += " " + arr2[i];
+                }
+                for(j = 0; j < arr3.length; j++){
+                if(arr1[i].indexOf())
+                }
+              */
+         }
+
+
+        </script>
+    </head>
+    <body>
+        <h1>Seattle U Room Reservation</h1>
+        <!-- control buttons-->
+        <input type="radio" onclick="filterSelection('all')" name="category" checked> Show all
+        <input type="radio" onclick="filterSelection('F2')" name="category"> Floor 2
+        <input type="radio" onclick="filterSelection('F3')" name="category"> Floor 3
+        <input type="radio" onclick="filterSelection('F4')" name="category"> Floor 4
+        <input type="radio" onclick="filterSelection('F5')" name="category"> Floor 5
+        <input type="radio" onclick="filterSelection('4S')" name="category"> 4 Seats
+        <input type="radio" onclick="filterSelection('6S')" name="category"> 6 Seats
+        <input type="radio" onclick="filterSelection('8S')" name="category"> 8 Seats
+        <input type="radio" onclick="filterSelection('16S')" name="category"> 16 Seats
+
+
+        <!-- The elements of the container (each room and their category and number)-->
+        <div class="container">
+            <div class="filterDiv F5 16S">Lemieux 509 (16 Seats)</div>
+            <div class="filterDiv F4 16S">Lemieux 409 (16 Seats)</div>
+            <div class="filterDiv F3 4S">Lemieux 309 (4 Seats)</div>
+            <div class="filterDiv F2 8S">Lemieux 270 (8 Seats)</div>
+            <div class="filterDiv F3 4S">Lemieux 314 (4 Seats)</div>
+            <div class="filterDiv F2 8S">Lemieux 271 (8 Seats)</div>
+            <div class="filterDiv F3 6S">Lemieux 352 (6 Seats)</div>
+            <div class="filterDiv F5 8S">Lemieux 510 (8 Seats)</div>
+            <div class="filterDiv F4 8S">Lemieux 410 (8 Seats)</div>
+            <div class="filterDiv F3 6S">Lemieux 370 (6 Seats)</div>
+            <div class="filterDiv F2 8S">Lemieux 272 (8 Seats)</div>
+            <div class="filterDiv F5 8S">Lemieux 511 (8 Seats)</div>
+            <div class="filterDiv F4 8S">Lemieux 411 (8 Seats)</div>
+            <div class="filterDiv F3 6S">Lemieux 371 (6 Seats)</div>
+            <div class="filterDiv F2 4S">Lemieux 273 (4 Seats)</div>
+            <div class="filterDiv F2 4S">Lemieux 411 (4 Seats)</div>
+        </div>
+
+        <script>
+             if (isAvailable()) {
+                 console.log("Room is open");
+             }
+        </script>
+
+    </body>
+</html>
